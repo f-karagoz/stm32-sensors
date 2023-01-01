@@ -36,7 +36,9 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define ADXL345_ADDRESS				0x53
+#define ADXL345_POWER_CTL_ADR		0x2D
+#define ADXL345_DATA_READ_ADR		0x32
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -45,7 +47,8 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+uint8_t txData[10];
+uint8_t rxData[6];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,6 +96,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  txData[0] = ADXL345_POWER_CTL_ADR;
+  txData[1] = 8;
+  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS, txData, 2, 100);
 
   /* USER CODE END 2 */
 
@@ -100,6 +106,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_I2C_Mem_Read(&hi2c1, ADXL345_ADDRESS, ADXL345_DATA_READ_ADR, 8, rxData, 6, 100);
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
