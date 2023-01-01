@@ -28,6 +28,13 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+typedef struct
+{
+	uint16_t x;
+	uint16_t y;
+	uint16_t z;
+}accel_t;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -36,7 +43,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define ADXL345_ADDRESS				0x53
+#define ADXL345_ADDRESS				(0x53 << 1)
 #define ADXL345_POWER_CTL_ADR		0x2D
 #define ADXL345_DATA_READ_ADR		0x32
 /* USER CODE END PM */
@@ -49,6 +56,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint8_t txData[10];
 uint8_t rxData[6];
+accel_t accel;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,6 +65,8 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
+
+void parse_data (uint8_t* buffer, accel_t* a);
 
 /* USER CODE END PFP */
 
@@ -99,6 +109,8 @@ int main(void)
   txData[0] = ADXL345_POWER_CTL_ADR;
   txData[1] = 8;
   HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS, txData, 2, 100);
+  HAL_Delay(10);
+  txData[0] = ADXL345_DATA_READ_ADR;
 
   /* USER CODE END 2 */
 
@@ -106,7 +118,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_I2C_Mem_Read(&hi2c1, ADXL345_ADDRESS, ADXL345_DATA_READ_ADR, 8, rxData, 6, 100);
+	  //HAL_I2C_Mem_Read(&hi2c1, ADXL345_ADDRESS, ADXL345_DATA_READ_ADR, 8, rxData, 6, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS, txData, 1, 100);
+	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS, rxData, 6, 100);
+	  parse_data(rxData, &accel);
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
@@ -262,6 +277,13 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void parse_data (uint8_t* buffer, accel_t* a)
+{
+	a->x = buffer[0] | buffer[1] << 8;
+	a->y = buffer[2] | buffer[3] << 8;
+	a->z = buffer[4] | buffer[5] << 8;
+}
 
 /* USER CODE END 4 */
 
