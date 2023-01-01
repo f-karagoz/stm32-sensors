@@ -1,0 +1,6 @@
+BASIC SENSOR SETUP:
+
+- In my BoB CSN pin is connected to Vddio. Therefore, IC is on I2C communication mode.
+- Also, SDA and SCL pins pulled-up with 4.7k resistors.
+- Address: 0x53 (SDO/ALT ADDRESS pin grounded in the BoB)
+		0xA6 to write, 0xA7 to read
