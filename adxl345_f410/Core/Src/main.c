@@ -44,6 +44,8 @@ typedef struct
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 #define ADXL345_ADDRESS				(0x53 << 1)
+#define ADXL345_ADDRESS_W			ADXL345_ADDRESS
+#define ADXL345_ADDRESS_R			(ADXL345_ADDRESS | 0x1)
 #define ADXL345_POWER_CTL_ADR		0x2D
 #define ADXL345_DATA_READ_ADR		0x32
 /* USER CODE END PM */
@@ -108,7 +110,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   txData[0] = ADXL345_POWER_CTL_ADR;
   txData[1] = 8;
-  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS, txData, 2, 100);
+  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 2, 100);
   HAL_Delay(10);
   txData[0] = ADXL345_DATA_READ_ADR;
 
@@ -119,11 +121,11 @@ int main(void)
   while (1)
   {
 	  //HAL_I2C_Mem_Read(&hi2c1, ADXL345_ADDRESS, ADXL345_DATA_READ_ADR, 8, rxData, 6, 100);
-	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS, txData, 1, 100);
-	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS, rxData, 6, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 1, 100);
+	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS_R, rxData, 6, 100);
 	  parse_data(rxData, &accel);
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	  HAL_Delay(500);
+	  HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
