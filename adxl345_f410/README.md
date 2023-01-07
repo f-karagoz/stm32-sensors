@@ -8,7 +8,7 @@
 
 
 ## Project Status ##
-**This project is currently in development. And, it is not ment to be used in this current situation!**
+**This project is currently in development. And, it is not meant to be used in this current situation!**
 <br/><br/>
 
 *TO-DO:*
