@@ -1,0 +1,19 @@
+BASIC SENSOR SETUP:
+
+- In my BoB CSN pin is connected to Vddio. Therefore, IC is on I2C communication mode.
+- Also, SDA and SCL pins pulled-up with 4.7k resistors.
+- Address: 0x53 (SDO/ALT ADDRESS pin grounded in the BoB)
+		0xA6 to write, 0xA7 to read
+
+Measurement data register fields:
+2's compliment
+Least Significant - Most Significant
+0x31 : data_format register
+0x32, 0x33 : x-axis
+0x34, 0x35 : y-axis
+0x36, 0x37 : z-axis
+It is recommended that a multiple-byte read of all registers be performed to prevent a change in data between reads of sequential registers.
+
+
+1) Write to POWER_CTL register (0x2D) 0x08. This puts the device into measure mode from standby mode.
+2) Read 6 bytes from 0x32
