@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-//! Alternate address is used when ALL ADDRESS pin of the ADXL345 hardware if high
+//! Alternate address is used when ALT ADDRESS pin of the ADXL345 hardware if high
 #define ADXL_345_USE_ALTERNATE_ADDRESS
 
 #ifndef ADXL_345_USE_ALTERNATE_ADDRESS
