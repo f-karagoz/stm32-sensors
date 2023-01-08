@@ -19,7 +19,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+//#include "../../ADXL345/adxl345_driver.h"
+#include "../ADXL345/adxl345_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -43,11 +44,7 @@ typedef struct
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define ADXL345_ADDRESS				(0x53 << 1)
-#define ADXL345_ADDRESS_W			ADXL345_ADDRESS
-#define ADXL345_ADDRESS_R			(ADXL345_ADDRESS | 0x1)
-#define ADXL345_POWER_CTL_ADR		0x2D
-#define ADXL345_DATA_READ_ADR		0x32
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -108,11 +105,14 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  txData[0] = ADXL345_POWER_CTL_ADR;
-  txData[1] = 8;
-  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 2, 100);
+
+  // Handle pointer needs to be passed to use the driver
+  set_i2c_handle(&hi2c1);								//! ADXL345 driver test
+
+  // Wake up the device by writing 8 to the POWER_CTL register
+  single_byte_write(ADXL345_REG_POWER_CTL, 8);			//! ADXL345 driver test
+
   HAL_Delay(10);
-  txData[0] = ADXL345_DATA_READ_ADR;
 
   /* USER CODE END 2 */
 
@@ -120,12 +120,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //HAL_I2C_Mem_Read(&hi2c1, ADXL345_ADDRESS, ADXL345_DATA_READ_ADR, 8, rxData, 6, 100);
-	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 1, 100);
-	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS_R, rxData, 6, 100);
-	  parse_data(rxData, &accel);
+	  // Read 3 axis measurements
+	  multi_byte_read(ADXL345_REG_DATAX0, rxData, 6);	//! ADXL345 driver test
+
+	  // Parse data to get useful information
+	  // TODO: This will be refactored in the API layer
+	  parse_data(rxData, &accel);						//! ADXL345 test
+
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(50);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
