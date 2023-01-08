@@ -8,6 +8,7 @@ extern "C" {
 /**
 ===================================== DRIVER CONFIGURATION =====================================
  */
+
 //! Alternate address is used when ALT ADDRESS pin of the ADXL345 hardware if high
 #define ADXL_345_USE_ALTERNATE_ADDRESS
 //! Alternate address is used when ALT ADDRESS pin of the ADXL345 hardware if high
@@ -119,13 +120,53 @@ extern "C" {
 #define ADXL345_REG_FIFO_STATUS_ACC		0x01								//! FIFO_STATUS register access type
 
 /**
-===================================== FUNCTION DECLERATIONS =====================================
+===================================== FUNCTION DECLARATIONS =====================================
  */
 
+/*!
+ * @brief	Gets i2c HAL handle to use inside this driver
+ * @details	This functions is needs to be called first in order to use the i2c communication functions.
+ *
+ * @param i2c_handle_in Address of I2C_HandleTypeDef instance
+ */
 void set_i2c_handle (void *i2c_handle_in);
+
+/*!
+ * @brief	Writes single byte to the device
+ *
+ * @param reg_adr	Register address
+ * @param data		8-bit data to written to the register of the given
+ * @return			1 success, 0 fail
+ */
 uint8_t single_byte_write (uint8_t reg_adr, uint8_t data);
+
+/*!
+ * @brief	Writes multiple bytes to the device
+ *
+ * @param reg_adr	Register address
+ * @param data		Pointer to the 8-bit data array
+ * @param data_size	Amount of bytes to written to the register of the device
+ * @return			1 success, 0 fail
+ */
 uint8_t multi_byte_write (uint8_t reg_adr, uint8_t* data, uint16_t data_size);
+
+/*!
+ * @brief	Reads single byte from device
+ *
+ * @param reg_adr	Register address
+ * @param result	Pointer to the location that the reading is written
+ * @return			1 success, 0 fail
+ */
 uint8_t single_byte_read (uint8_t reg_adr, uint8_t* result);
+
+/*!
+ * @brief	Reads multiple bytes from device
+ *
+ * @param reg_adr	Register address
+ * @param result	Pointer to the location that the reading is written
+ * @param data_size	Amount of bytes to be read from the register of the device
+ * @return			1 success, 0 fail
+ */
 uint8_t multi_byte_read (uint8_t reg_adr, uint8_t* result, uint16_t data_size);
 
 #ifdef __cplusplus

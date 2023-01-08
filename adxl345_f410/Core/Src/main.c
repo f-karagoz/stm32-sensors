@@ -106,13 +106,13 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
+  // Handle pointer needs to be passed to use the driver
   set_i2c_handle(&hi2c1);								//! ADXL345 driver test
 
+  // Wake up the device by writing 8 to the POWER_CTL register
   single_byte_write(ADXL345_REG_POWER_CTL, 8);			//! ADXL345 driver test
 
   HAL_Delay(10);
-
-//  txData[0] = ADXL345_REG_DATAX0;
 
   /* USER CODE END 2 */
 
@@ -120,12 +120,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Read 3 axis measurements
 	  multi_byte_read(ADXL345_REG_DATAX0, rxData, 6);	//! ADXL345 driver test
 
-	  parse_data(rxData, &accel);
+	  // Parse data to get useful information
+	  // TODO: This will be refactored in the API layer
+	  parse_data(rxData, &accel);						//! ADXL345 test
 
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-
 	  HAL_Delay(50);
 
     /* USER CODE END WHILE */
