@@ -5,8 +5,38 @@
 extern "C" {
 #endif
 
+/**
+===================================== DRIVER CONFIGURATION =====================================
+ */
 //! Alternate address is used when ALT ADDRESS pin of the ADXL345 hardware if high
 #define ADXL_345_USE_ALTERNATE_ADDRESS
+//! Alternate address is used when ALT ADDRESS pin of the ADXL345 hardware if high
+#define ADXL_345_USE_HAL_DRIVER
+// #define ADXL_345_USE_LL_DRIVER		// TODO Not supported yet
+// #define ADXL_345_USE_BARE_METAL		// TODO Not supported yet
+
+/**
+===================================== INCLUDES =====================================
+ */
+
+#ifdef ADXL_345_USE_HAL_DRIVER
+// If I2C is not enabled before enable it to include the necessary HAL libraries
+#ifndef HAL_I2C_MODULE_ENABLED
+#define HAL_I2C_MODULE_ENABLED
+#endif
+// TODO change this according to the HAL Driver of the related controller series
+#include "stm32f4xx_hal.h"
+#endif
+
+#include <stdint.h>
+
+/**
+===================================== DEFINES =====================================
+ */
+
+#ifdef ADXL_345_USE_HAL_DRIVER
+#define I2C_POLLING_MODE_TIMEOUT		100
+#endif
 
 #ifndef ADXL_345_USE_ALTERNATE_ADDRESS
 #define ADXL345_ADDRESS					0x1D								//! Device address
@@ -18,7 +48,7 @@ extern "C" {
 #endif
 
 #define ADXL345_ADDRESS_W				( ADXL345_ADDRESS << 1 )			//! Device address with write access
-#define ADXL345_ADDRESS_R				( ( ADXL345_ADDRESS << 1 ) | 0x1)	//! Device address with read access
+#define ADXL345_ADDRESS_R				( ( ADXL345_ADDRESS << 1 ) | 0x01)	//! Device address with read access
 
 /*!
  * @brief 	Register addresses of ADXL345 and register access types
@@ -87,6 +117,15 @@ extern "C" {
 #define ADXL345_REG_FIFO_STATUS			0x39								//! FIFO status
 #define ADXL345_REG_FIFO_STATUS_ACC		0x01								//! FIFO_STATUS register access type
 
+/**
+===================================== FUNCTION DECLERATIONS =====================================
+ */
+
+void set_i2c_handle (void *i2c_handle_in);
+uint8_t single_byte_write (uint8_t reg_adr, uint8_t data);
+uint8_t multi_byte_write (uint8_t reg_adr, uint8_t* data, uint16_t data_size);
+uint8_t single_byte_read (uint8_t reg_adr, uint8_t* result);
+uint8_t multi_byte_read (uint8_t reg_adr, uint8_t* result, uint16_t data_size);
 
 #ifdef __cplusplus
 }
