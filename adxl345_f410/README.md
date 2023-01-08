@@ -12,6 +12,6 @@
 <br/><br/>
 
 *TO-DO:*
-- [ ] Low level driver to communicate with all the registers of the sensor to gain full control over the sensor
+- [X] Low level driver to communicate with all the registers of the sensor to gain full control over the sensor
 - [ ] API to easily control the sensor
 - [ ] Real life application example set can be used out of the box
