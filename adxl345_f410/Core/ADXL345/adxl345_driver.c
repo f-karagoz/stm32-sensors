@@ -5,7 +5,7 @@
  */
 
 #ifdef ADXL_345_USE_HAL_DRIVER
-const I2C_HandleTypeDef *i2c_handle;		//! Handle to be used with HAL driver, internal linkage
+I2C_HandleTypeDef *i2c_handle;		//! Handle to be used with HAL driver, internal linkage
 #endif
 
 /**
@@ -19,7 +19,7 @@ void set_i2c_handle (void* i2c_handle_in)
 
 uint8_t single_byte_write (uint8_t reg_adr, uint8_t data)
 {
-	uint8_t txData = (uint8_t*) malloc( 2 * sizeof (uint8_t) );
+	uint8_t *txData = (uint8_t*) malloc( 2 * sizeof (uint8_t) );
 	txData[0] = reg_adr;
 	txData[1] = data;
 
