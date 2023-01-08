@@ -31,18 +31,56 @@ uint8_t single_byte_write (uint8_t reg_adr, uint8_t data)
 
 uint8_t multi_byte_write (uint8_t reg_adr, uint8_t* data, uint16_t data_size)
 {
-	// TODO implement the operations
-	return 0;
+	uint8_t *txData = (uint8_t*) malloc( (data_size + 1) * sizeof (uint8_t) );
+
+	txData[0] = reg_adr;
+	for (int i = 0; i < data_size; ++i)
+		txData [ i + 1 ] = data [ i ];
+
+	HAL_StatusTypeDef hal_result =
+			HAL_I2C_Master_Transmit(i2c_handle, ADXL345_ADDRESS_W, txData, data_size + 1, I2C_POLLING_MODE_TIMEOUT);
+
+	return (hal_result == HAL_OK);
 }
 
 uint8_t single_byte_read (uint8_t reg_adr, uint8_t* result)
 {
-	// TODO implement the operations
-	return 0;
+	uint8_t *txData = (uint8_t*) malloc( sizeof (uint8_t) );
+	*txData = reg_adr;
+
+	HAL_StatusTypeDef hal_result =
+			HAL_I2C_Master_Transmit(i2c_handle, ADXL345_ADDRESS_W, txData, 1, I2C_POLLING_MODE_TIMEOUT);
+
+	if ( hal_result == HAL_OK )
+	{
+		hal_result =
+			HAL_I2C_Master_Receive(i2c_handle, ADXL345_ADDRESS_R, result, 1, I2C_POLLING_MODE_TIMEOUT);
+	}
+	else
+	{
+		return 0;
+	}
+
+	return (hal_result == HAL_OK);
 }
 
 uint8_t multi_byte_read (uint8_t reg_adr, uint8_t* result, uint16_t data_size)
 {
-	// TODO implement the operations
-	return 0;
+	uint8_t *txData = (uint8_t*) malloc( sizeof (uint8_t) );
+	*txData = reg_adr;
+
+	HAL_StatusTypeDef hal_result =
+			HAL_I2C_Master_Transmit(i2c_handle, ADXL345_ADDRESS_W, txData, 1, I2C_POLLING_MODE_TIMEOUT);
+
+	if ( hal_result == HAL_OK )
+	{
+		hal_result =
+			HAL_I2C_Master_Receive(i2c_handle, ADXL345_ADDRESS_R, result, data_size, I2C_POLLING_MODE_TIMEOUT);
+	}
+	else
+	{
+		return 0;
+	}
+
+	return (hal_result == HAL_OK);
 }

@@ -105,13 +105,16 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  set_i2c_handle(&hi2c1);
+  set_i2c_handle(&hi2c1);								//! ADXL345 driver test
 
-  txData[0] = ADXL345_REG_POWER_CTL;
-  txData[1] = 8;
-  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 2, 100);
+  single_byte_write(ADXL345_REG_POWER_CTL, 8);			//! ADXL345 driver test
+//  txData[0] = ADXL345_REG_POWER_CTL;
+//  txData[1] = 8;
+//  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 2, 100);
+
   HAL_Delay(10);
-  txData[0] = ADXL345_REG_DATAX0;
+
+//  txData[0] = ADXL345_REG_DATAX0;
 
   /* USER CODE END 2 */
 
@@ -119,8 +122,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 1, 100);
-	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS_R, rxData, 6, 100);
+	  multi_byte_read(ADXL345_REG_DATAX0, rxData, 6);	//! ADXL345 driver test
+//	  HAL_I2C_Master_Transmit(&hi2c1, ADXL345_ADDRESS_W, txData, 1, 100);
+//	  HAL_I2C_Master_Receive(&hi2c1, ADXL345_ADDRESS_R, rxData, 6, 100);
 	  parse_data(rxData, &accel);
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(50);
